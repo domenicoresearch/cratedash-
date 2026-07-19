@@ -6156,13 +6156,15 @@ function buildGLTFCharacter(id) {
   const dummy = () => { const d = new THREE.Object3D(); player.add(d); return d; };
   legL = dummy(); legR = dummy(); armL = dummy(); armR = dummy(); tailGrp = dummy(); capeRef = dummy(); body = dummy();
   bodyY0 = 0;
-  // real sword, gripped in the cat's right hand bone so it moves with the arm
-  sword = buildSword();
+  // The model already holds its OWN sword in hand.R, so we don't add a second
+  // blade. `sword` is an invisible pivot on that same hand — the slash swing and
+  // blade trail ride on it, while the visible sword is the cat's built-in one.
+  sword = new THREE.Group();
   sword.scale.setScalar(1.15);
   sword.position.set(0, 0.02, 0);
   sword.rotation.set(1.15, 0, 0.15);
   const hand = avatar.getObjectByName('hand.R');
-  if (hand) hand.add(sword); else { sword.position.set(0.45, 1.15, -0.05); player.add(sword); }
+  if (hand) hand.add(sword); else player.add(sword);
   catSword.grp = sword;
   blob = new THREE.Mesh(G.shadow, M.shadow); blob.rotation.x = -Math.PI / 2; blob.position.y = 0.02; player.add(blob);
   blob.castShadow = false; blob.visible = !(save.shadows !== false);
